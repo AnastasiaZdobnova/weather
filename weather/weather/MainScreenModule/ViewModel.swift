@@ -14,8 +14,14 @@ class WeatherViewModel {
     private let model = WeatherModel()
     let disposeBag = DisposeBag()
     var relay = PublishRelay<[SimpleWeatherForecast]>()
+    var relayCity = PublishRelay<String>()
     
     func buttonPressed(text: String) {
+        
+        model.relayCity.subscribe { event in
+            self.relayCity.accept(event.element ?? "Ошибка")
+        }.disposed(by: disposeBag)
+        
         model.relay.subscribe { event in
             self.relay.accept(event.element!)
         }.disposed(by: disposeBag)
@@ -24,6 +30,11 @@ class WeatherViewModel {
     }
     
     func requestByCoordinates(latitude: Double, longitude: Double){
+        
+        model.relayCity.subscribe { event in
+            self.relayCity.accept(event.element ?? "Ошибка")
+        }.disposed(by: disposeBag)
+        
         model.relay.subscribe { event in
             self.relay.accept(event.element!)
         }.disposed(by: disposeBag)

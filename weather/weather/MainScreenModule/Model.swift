@@ -9,64 +9,77 @@ import Foundation
 import RxSwift
 import RxRelay
 
-struct SimpleWeatherForecast {
-    let date: String
-    let minimumTemperature: Double
-    let maximumTemperature: Double
-    let dayIconPhrase: String
-    let nightIconPhrase: String
-}
-
 class WeatherModel {
     private let networkService = NetworkService()
     private let disposeBag = DisposeBag()
     var relay = PublishRelay<[SimpleWeatherForecast]>()
+    var relayCity = PublishRelay<String>()
     private let apiKey = "SXPHETs2IYVLCKnIs7MlKSYiRB9dzpTg"
     private var simpleForecast : [SimpleWeatherForecast] = []
     
     func requestByCoordinates(latitude: Double, longitude: Double){
-        networkService.requestByCoordinates(latitude: latitude, longitude: longitude, apiKey: apiKey) { [weak self] (citySearchResult, error) in
-            if let error = error {
-                print("Ошибка при получении ключа города: \(error)")
-                return
-            }
-            guard let self = self, let cityKey = citySearchResult?.key else { return }
-            self.networkService.fetchWeatherForecast(cityKey: cityKey, apiKey: self.apiKey) { [weak self] (weatherForecast, error) in
-                if let error = error {
-                    print("Ошибка при получении ключа города: \(error)")
+        
+        networkService.relayCity.subscribe { event in
+            self.relayCity.accept(event.element! ?? "Ошибка")
+        }.disposed(by: disposeBag)
+        
+        networkService.keyRelay
+            .subscribe(onNext: { [weak self] cityKey in
+                guard let key = cityKey else {
+                    print("Ошибка: cityKey является nil")
+                    self?.relayCity.accept("Геопозиция не распознана")
                     return
                 }
-                else{
-                    guard let forecast = weatherForecast else { return }
-                    self?.simpleForecast = (self?.processForecast(forecast))!
-                    self?.relay.accept(self?.simpleForecast ?? [])
-                
-                }
-            }
-        }
+                self?.getData(cityKey: key)
+            }, onError: { error in
+                print("Произошла ошибка: \(error)")
+                self.relayCity.accept("Данные о погоде не найдены")
+            })
+            .disposed(by: disposeBag)
+        
+        networkService.requestByCoordinates(latitude: latitude, longitude: longitude, apiKey: apiKey)
     }
     
     func fetchWeather(text: String) {
         
-        networkService.fetchCityKey(city: text, apiKey: apiKey) { [weak self] (citySearchResult, error) in
-            if let error = error {
-                print("Ошибка при получении ключа города: \(error)")
-                return
-            }
-            guard let self = self, let cityKey = citySearchResult?.key else { return }
-            self.networkService.fetchWeatherForecast(cityKey: cityKey, apiKey: self.apiKey) { [weak self] (weatherForecast, error) in
-                if let error = error {
-                    print("Ошибка при получении ключа города: \(error)")
+        networkService.relayCity.subscribe { event in
+            self.relayCity.accept(event.element! ?? "Ошибка")
+        }.disposed(by: disposeBag)
+        
+        networkService.keyRelay
+            .subscribe(onNext: { [weak self] cityKey in
+                guard let key = cityKey else {
+                    print("Ошибка: cityKey является nil")
+                    self?.relayCity.accept("Город не найден")
                     return
                 }
-                else{
-                    guard let forecast = weatherForecast else { return }
-                    self?.simpleForecast = (self?.processForecast(forecast))!
-                    self?.relay.accept(self?.simpleForecast ?? [])
-                
-                }
-            }
-        }
+                self?.getData(cityKey: key)
+            }, onError: { error in
+                print("Произошла ошибка: \(error)")
+                self.relayCity.accept("Произошла ошибка")
+            })
+            .disposed(by: disposeBag)
+
+        networkService.fetchCityKey(city: text, apiKey: apiKey)
+        
+    }
+    
+    
+    func getData (cityKey: String){
+        
+        networkService.relay
+            .subscribe(onNext: { [weak self] forecast in
+                guard let self = self else { return }
+                let simpleForecast = processForecast(forecast)
+                self.simpleForecast = simpleForecast
+                self.relay.accept(simpleForecast)
+            }, onError: { error in
+                print("Произошла ошибка: \(error)")
+                self.relayCity.accept("Произошла ошибка")
+            })
+            .disposed(by: disposeBag)
+        
+        self.networkService.fetchWeatherForecast(cityKey: cityKey, apiKey: self.apiKey)
     }
     
     func processForecast(_ forecast: WeatherForecast) -> [SimpleWeatherForecast] {

@@ -18,6 +18,7 @@
 		54E3E81B2BB186630088922A /* WeatherForecast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E3E81A2BB186630088922A /* WeatherForecast.swift */; };
 		54E3E81D2BB1F7F30088922A /* CitySearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E3E81C2BB1F7F30088922A /* CitySearchResult.swift */; };
 		54E3E81F2BB2DB840088922A /* WeatherTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E3E81E2BB2DB840088922A /* WeatherTableViewCell.swift */; };
+		54E3E8212BB307870088922A /* SimpleWeatherForecast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E3E8202BB307870088922A /* SimpleWeatherForecast.swift */; };
 		9AF5B52AA8F86897FFD6C08B /* Pods_weather.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A12B0A81F5078999383253C /* Pods_weather.framework */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +38,7 @@
 		54E3E81A2BB186630088922A /* WeatherForecast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherForecast.swift; sourceTree = "<group>"; };
 		54E3E81C2BB1F7F30088922A /* CitySearchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitySearchResult.swift; sourceTree = "<group>"; };
 		54E3E81E2BB2DB840088922A /* WeatherTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherTableViewCell.swift; sourceTree = "<group>"; };
+		54E3E8202BB307870088922A /* SimpleWeatherForecast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleWeatherForecast.swift; sourceTree = "<group>"; };
 		D56C3AE95C302C459004A6B0 /* Pods-weather.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-weather.release.xcconfig"; path = "Target Support Files/Pods-weather/Pods-weather.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -100,6 +102,7 @@
 				540DE4342BB0797D00E19D2A /* ViewModel.swift */,
 				540DE4322BB0797400E19D2A /* Model.swift */,
 				54E3E81E2BB2DB840088922A /* WeatherTableViewCell.swift */,
+				54E3E8202BB307870088922A /* SimpleWeatherForecast.swift */,
 			);
 			path = MainScreenModule;
 			sourceTree = "<group>";
@@ -239,6 +242,7 @@
 				540DE4352BB0797D00E19D2A /* ViewModel.swift in Sources */,
 				540DE41E2BB0733B00E19D2A /* ViewController.swift in Sources */,
 				54E3E81B2BB186630088922A /* WeatherForecast.swift in Sources */,
+				54E3E8212BB307870088922A /* SimpleWeatherForecast.swift in Sources */,
 				540DE41A2BB0733B00E19D2A /* AppDelegate.swift in Sources */,
 				54E3E81D2BB1F7F30088922A /* CitySearchResult.swift in Sources */,
 				540DE41C2BB0733B00E19D2A /* SceneDelegate.swift in Sources */,

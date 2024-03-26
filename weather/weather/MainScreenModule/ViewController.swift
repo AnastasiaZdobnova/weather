@@ -16,6 +16,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     let disposeBag = DisposeBag()
     let locationManager = CLLocationManager()
     
+    let cityLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Город: "
+        return label
+    }()
+    
     let locationButton: UIButton = {
         let button = UIButton(type: .system)
         if let image = UIImage(systemName: "location.square") {
@@ -31,7 +37,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         return textField
     }()
     
-    let tableView = UITableView()
+    let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.showsVerticalScrollIndicator = false
+        return tableView
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,17 +49,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         view.backgroundColor = .white
         setupUI()
         subscribes()
-        
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization() // Запрашиваем разрешение пользователя
-        //locationManager.startUpdatingLocation() // Начинаем отслеживание местоположения
-        
     }
     
     private func setupUI(){
         view.addSubview(locationButton)
         view.addSubview(textField)
         view.addSubview(tableView)
+        view.addSubview(cityLabel)
         
         textField.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
@@ -57,7 +65,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             make.width.equalTo(200)
         }
         
-        view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.top.equalTo(textField.snp.bottom).offset(20)
             make.left.right.equalToSuperview().inset(20)
@@ -65,10 +72,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         }
         tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: "WeatherTableViewCell")
         
-        view.addSubview(locationButton)
         locationButton.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(20)
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
+        }
+        
+        cityLabel.snp.makeConstraints { make in
+            make.top.equalTo(textField.snp.bottom)
+            make.centerX.equalToSuperview()
+            
         }
     }
     
@@ -91,9 +103,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         
         locationButton.rx.tap
             .bind { [weak self] in
-                
                 self?.locationManager.requestLocation() // Requests a single location update
+                self?.textField.text = ""
             }
+            .disposed(by: disposeBag)
+        
+        viewModel.relayCity
+            .observe(on: MainScheduler.instance) // Убедитесь, что подписка выполняется на главном потоке
+            .subscribe(onNext: { [weak self] city in
+                self?.cityLabel.text = city
+            })
             .disposed(by: disposeBag)
     }
     

@@ -11,92 +11,97 @@ import RxRelay
 
 protocol NetworkServiceProtocol {
     var relay: PublishRelay<WeatherForecast> { get }
-    func fetchCityKey(city: String, apiKey: String, completion: @escaping (CitySearchResultElement?, Error?) -> Void)
-    func fetchWeatherForecast(cityKey: String, apiKey: String, completion: @escaping (WeatherForecast?, Error?) -> Void)
-    func requestByCoordinates(latitude: Double, longitude: Double, apiKey: String, completion: @escaping (CitySearchResultElement?, Error?) -> Void)
+    var keyRelay: PublishRelay<String?> { get }
+    var relayCity: PublishRelay<String?> { get }
+    func fetchCityKey(city: String, apiKey: String)
+    func fetchWeatherForecast(cityKey: String, apiKey: String)
+    func requestByCoordinates(latitude: Double, longitude: Double, apiKey: String)
 }
 
 final class NetworkService: NetworkServiceProtocol {
     
     var relay = PublishRelay<WeatherForecast>()
+    var keyRelay = PublishRelay<String?>()
+    var relayCity = PublishRelay<String?>()
     
-    func requestByCoordinates(latitude: Double, longitude: Double, apiKey: String, completion: @escaping (CitySearchResultElement?, Error?) -> Void){
+    func requestByCoordinates(latitude: Double, longitude: Double, apiKey: String) {
+        
         let urlString = "https://dataservice.accuweather.com//locations/v1/cities/geoposition/search?apikey=\(apiKey)&q=\(latitude)%2C\(longitude)&language=ru-RU&details=false&toplevel=false"
-        print(urlString)
         guard let url = URL(string: urlString) else {
             print("Invalid URL")
-            completion(nil, nil)
             return
         }
 
         URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data else {
                 print(error?.localizedDescription ?? "Unknown error")
-                completion(nil, error)
                 return
             }
             
             do {
                 let citySearchResult = try JSONDecoder().decode(CitySearchResultElement.self, from: data)
                 let cityInfo = citySearchResult
-                completion(cityInfo, nil)
+                self.keyRelay.accept(cityInfo.key)
+                if (cityInfo.localizedName != ""){
+                    self.relayCity.accept(cityInfo.localizedName)
+                }
+                else{
+                    self.relayCity.accept(cityInfo.englishName)
+                }
             } catch let decodeError {
                 print("Decoding error: \(decodeError)")
-                completion(nil, decodeError)
+                return
             }
         }.resume()
     }
     
-    func fetchCityKey(city: String, apiKey: String, completion: @escaping (CitySearchResultElement?, Error?) -> Void) {
+    func fetchCityKey(city: String, apiKey: String) {
         let urlString = "https://dataservice.accuweather.com/locations/v1/cities/search?apikey=\(apiKey)&q=\(city)&language=ru-RU&details=false"
         guard let url = URL(string: urlString) else {
             print("Invalid URL")
-            completion(nil, nil)
             return
         }
 
         URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data else {
                 print(error?.localizedDescription ?? "Unknown error")
-                completion(nil, error)
                 return
             }
             
             do {
                 let citySearchResult = try JSONDecoder().decode(CitySearchResult.self, from: data)
                 let cityInfo = citySearchResult.first
-                completion(cityInfo, nil)
+                self.keyRelay.accept(cityInfo?.key)
+                self.relayCity.accept(cityInfo?.localizedName)
             } catch let decodeError {
                 print("Decoding error: \(decodeError)")
-                completion(nil, decodeError)
+                return
             }
         }.resume()
     }
 
 
-    func fetchWeatherForecast(cityKey: String, apiKey: String, completion: @escaping (WeatherForecast?, Error?) -> Void) {
+    func fetchWeatherForecast(cityKey: String, apiKey: String) {
         
         let urlString = "https://dataservice.accuweather.com/forecasts/v1/daily/5day/\(cityKey)?apikey=\(apiKey)&language=ru-Ru&details=false&metric=true"
         
         guard let url = URL(string: urlString) else {
             print("Invalid URL")
-            completion(nil, nil)
             return
         }
         
         URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data else {
                 print(error?.localizedDescription ?? "Unknown error")
-                completion(nil, error)
                 return
             }
             
             do {
                 let weatherForecast = try JSONDecoder().decode(WeatherForecast.self, from: data)
-                completion(weatherForecast, nil)
+                self.relay.accept(weatherForecast)
             } catch let decodeError {
                 print("Decoding fetchWeatherForecast error: \(decodeError)")
-                completion(nil, decodeError)
+                return
             }
         }.resume()
     }
