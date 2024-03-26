@@ -21,19 +21,22 @@ class WeatherModel {
         
         networkService.relayCity.subscribe { event in
             self.relayCity.accept(event.element! ?? "Ошибка")
+            self.relay.accept([])
         }.disposed(by: disposeBag)
         
         networkService.keyRelay
             .subscribe(onNext: { [weak self] cityKey in
                 guard let key = cityKey else {
                     print("Ошибка: cityKey является nil")
-                    self?.relayCity.accept("Геопозиция не распознана")
+                    self?.relayCity.accept("Ошибка")
+                    self?.relay.accept([])
                     return
                 }
                 self?.getData(cityKey: key)
             }, onError: { error in
                 print("Произошла ошибка: \(error)")
-                self.relayCity.accept("Данные о погоде не найдены")
+                self.relayCity.accept("Ошибка")
+                self.relay.accept([])
             })
             .disposed(by: disposeBag)
         
@@ -44,6 +47,7 @@ class WeatherModel {
         
         networkService.relayCity.subscribe { event in
             self.relayCity.accept(event.element! ?? "Ошибка")
+            self.relay.accept([])
         }.disposed(by: disposeBag)
         
         networkService.keyRelay
@@ -56,7 +60,8 @@ class WeatherModel {
                 self?.getData(cityKey: key)
             }, onError: { error in
                 print("Произошла ошибка: \(error)")
-                self.relayCity.accept("Произошла ошибка")
+                self.relayCity.accept("Ошибка")
+                self.relay.accept([])
             })
             .disposed(by: disposeBag)
 
@@ -75,7 +80,8 @@ class WeatherModel {
                 self.relay.accept(simpleForecast)
             }, onError: { error in
                 print("Произошла ошибка: \(error)")
-                self.relayCity.accept("Произошла ошибка")
+                self.relayCity.accept("Ошибка")
+                self.relay.accept([])
             })
             .disposed(by: disposeBag)
         

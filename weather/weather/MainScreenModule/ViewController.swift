@@ -70,6 +70,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             make.left.right.equalToSuperview().inset(20)
             make.bottom.equalToSuperview()
         }
+        
         tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: "WeatherTableViewCell")
         
         locationButton.snp.makeConstraints { make in

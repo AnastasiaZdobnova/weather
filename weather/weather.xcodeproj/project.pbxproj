@@ -98,11 +98,11 @@
 		54A202B52BB07C1500AC0A6B /* MainScreenModule */ = {
 			isa = PBXGroup;
 			children = (
+				54E3E8232BB32AEF0088922A /* Struct */,
+				54E3E8222BB32ADD0088922A /* Cell */,
 				540DE41D2BB0733B00E19D2A /* ViewController.swift */,
 				540DE4342BB0797D00E19D2A /* ViewModel.swift */,
 				540DE4322BB0797400E19D2A /* Model.swift */,
-				54E3E81E2BB2DB840088922A /* WeatherTableViewCell.swift */,
-				54E3E8202BB307870088922A /* SimpleWeatherForecast.swift */,
 			);
 			path = MainScreenModule;
 			sourceTree = "<group>";
@@ -110,11 +110,35 @@
 		54A202B62BB07C2F00AC0A6B /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				54E3E8242BB32B040088922A /* Struct */,
 				540DE4362BB079AB00E19D2A /* NetworkService.swift */,
-				54E3E81A2BB186630088922A /* WeatherForecast.swift */,
-				54E3E81C2BB1F7F30088922A /* CitySearchResult.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		54E3E8222BB32ADD0088922A /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				54E3E81E2BB2DB840088922A /* WeatherTableViewCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		54E3E8232BB32AEF0088922A /* Struct */ = {
+			isa = PBXGroup;
+			children = (
+				54E3E8202BB307870088922A /* SimpleWeatherForecast.swift */,
+			);
+			path = Struct;
+			sourceTree = "<group>";
+		};
+		54E3E8242BB32B040088922A /* Struct */ = {
+			isa = PBXGroup;
+			children = (
+				54E3E81C2BB1F7F30088922A /* CitySearchResult.swift */,
+				54E3E81A2BB186630088922A /* WeatherForecast.swift */,
+			);
+			path = Struct;
 			sourceTree = "<group>";
 		};
 		E225749FC4732DEAFA808771 /* Frameworks */ = {
