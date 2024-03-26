@@ -9,15 +9,27 @@ import Foundation
 import RxSwift
 import RxRelay
 
-class WeatherModel {
-    private let networkService = NetworkService()
+protocol ModelProtocol {
+    var networkService : NetworkServiceProtocol { get }
+    var apiKey : String { get }
+    var simpleForecast : [SimpleWeatherForecast] { get }
+    var relay : PublishRelay<[SimpleWeatherForecast]> { get }
+    var relayCity : PublishRelay<String> { get }
+    
+    func requestByCoordinates(latitude: Double, longitude: Double)
+    func fetchWeather(text: String)
+    
+}
+
+class WeatherModel: ModelProtocol {
+    var networkService : NetworkServiceProtocol = NetworkService()
     private let disposeBag = DisposeBag()
     var relay = PublishRelay<[SimpleWeatherForecast]>()
     var relayCity = PublishRelay<String>()
-    private let apiKey = "SXPHETs2IYVLCKnIs7MlKSYiRB9dzpTg"
-    private var simpleForecast : [SimpleWeatherForecast] = []
+    internal let apiKey = "SXPHETs2IYVLCKnIs7MlKSYiRB9dzpTg"
+    internal var simpleForecast : [SimpleWeatherForecast] = []
     
-    func requestByCoordinates(latitude: Double, longitude: Double){
+    func requestByCoordinates(latitude: Double, longitude: Double) {
         
         networkService.relayCity.subscribe { event in
             self.relayCity.accept(event.element! ?? "Ошибка")
@@ -70,7 +82,7 @@ class WeatherModel {
     }
     
     
-    func getData (cityKey: String){
+    private func getData (cityKey: String) {
         
         networkService.relay
             .subscribe(onNext: { [weak self] forecast in
@@ -88,7 +100,7 @@ class WeatherModel {
         self.networkService.fetchWeatherForecast(cityKey: cityKey, apiKey: self.apiKey)
     }
     
-    func processForecast(_ forecast: WeatherForecast) -> [SimpleWeatherForecast] {
+    private func processForecast(_ forecast: WeatherForecast) -> [SimpleWeatherForecast] {
         return forecast.DailyForecasts.map { dailyForecast in
             let date = dailyForecast.Date
             let minTemp = dailyForecast.Temperature.Minimum.Value

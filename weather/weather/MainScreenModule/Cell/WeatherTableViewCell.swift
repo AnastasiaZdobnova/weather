@@ -9,10 +9,31 @@ import Foundation
 import SnapKit
 
 class WeatherTableViewCell: UITableViewCell {
-    private let dateLabel = UILabel()
-    private let temperatureLabel = UILabel()
-    private let dayPhraseLabel = UILabel()
-    private let nightPhraseLabel = UILabel()
+    
+    private let dateLabel : UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.textColor = ColorConstants.textColor
+        return label
+    }()
+    private let temperatureLabel : UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.textColor = ColorConstants.textColor
+        return label
+    }()
+    private let dayPhraseLabel : UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.textColor = ColorConstants.textColor
+        return label
+    }()
+    private let nightPhraseLabel : UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.textColor = ColorConstants.textColor
+        return label
+    }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -24,30 +45,35 @@ class WeatherTableViewCell: UITableViewCell {
     }
     
     private func setupUI() {
+        
         addSubview(dateLabel)
         addSubview(temperatureLabel)
         addSubview(dayPhraseLabel)
         addSubview(nightPhraseLabel)
-        nightPhraseLabel.numberOfLines = 0
+        
         dateLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(12)
-            make.left.equalToSuperview().offset(12)
+            make.top.equalToSuperview().offset(LayoutConstants.standardMargin)
+            make.left.equalToSuperview().offset(LayoutConstants.standardMargin)
+            make.right.equalToSuperview().inset(LayoutConstants.standardMargin)
         }
         
         temperatureLabel.snp.makeConstraints { make in
-            make.top.equalTo(dateLabel.snp.bottom).offset(10)
-            make.left.equalToSuperview().offset(12)
+            make.top.equalTo(dateLabel.snp.bottom).offset(LayoutConstants.standardMargin)
+            make.left.equalToSuperview().offset(LayoutConstants.standardMargin)
+            make.right.equalToSuperview().inset(LayoutConstants.standardMargin)
         }
         
         dayPhraseLabel.snp.makeConstraints { make in
-            make.top.equalTo(temperatureLabel.snp.bottom).offset(10)
-            make.left.equalToSuperview().offset(12)
+            make.top.equalTo(temperatureLabel.snp.bottom).offset(LayoutConstants.standardMargin)
+            make.left.equalToSuperview().offset(LayoutConstants.standardMargin)
+            make.right.equalToSuperview().inset(LayoutConstants.standardMargin)
         }
         
         nightPhraseLabel.snp.makeConstraints { make in
-            make.top.equalTo(dayPhraseLabel.snp.bottom).offset(10)
-            make.left.equalToSuperview().offset(12)
-            make.bottom.equalToSuperview().offset(-10)
+            make.top.equalTo(dayPhraseLabel.snp.bottom).offset(LayoutConstants.standardMargin)
+            make.left.equalToSuperview().offset(LayoutConstants.standardMargin)
+            make.right.equalToSuperview().inset(LayoutConstants.standardMargin)
+            make.bottom.equalToSuperview().inset(LayoutConstants.standardMargin)
         }
     }
     

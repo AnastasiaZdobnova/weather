@@ -9,10 +9,17 @@ import Foundation
 import RxSwift
 import RxRelay
 
-class WeatherViewModel {
+protocol ViewModelProtocol {
+    var model : ModelProtocol { get }
+    var relay : PublishRelay<[SimpleWeatherForecast]> { get }
+    var relayCity : PublishRelay<String> { get }
+    func buttonPressed(text: String)
+    func requestByCoordinates(latitude: Double, longitude: Double)
     
-    private let model = WeatherModel()
-    let disposeBag = DisposeBag()
+}
+class WeatherViewModel: ViewModelProtocol {
+    var model: ModelProtocol = WeatherModel()
+    private let disposeBag = DisposeBag()
     var relay = PublishRelay<[SimpleWeatherForecast]>()
     var relayCity = PublishRelay<String>()
     
@@ -29,7 +36,7 @@ class WeatherViewModel {
         model.fetchWeather(text: text)
     }
     
-    func requestByCoordinates(latitude: Double, longitude: Double){
+    func requestByCoordinates(latitude: Double, longitude: Double) {
         
         model.relayCity.subscribe { event in
             self.relayCity.accept(event.element ?? "Ошибка")
