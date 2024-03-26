@@ -26,7 +26,7 @@ class WeatherModel: ModelProtocol {
     private let disposeBag = DisposeBag()
     var relay = PublishRelay<[SimpleWeatherForecast]>()
     var relayCity = PublishRelay<String>()
-    internal let apiKey = "SXPHETs2IYVLCKnIs7MlKSYiRB9dzpTg"
+    internal let apiKey = "wIVHOrzDnKxH87ZWmAiSbNmy9o6E02kx"
     internal var simpleForecast : [SimpleWeatherForecast] = []
     
     func requestByCoordinates(latitude: Double, longitude: Double) {
