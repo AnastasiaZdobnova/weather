@@ -14,7 +14,7 @@ class WeatherModel {
     private let networkService = NetworkService()
     private let disposeBag = DisposeBag()
     var relay = PublishRelay<String>()
-    private let apiKey = "fc18430ba19404244839d857488daa4a"
+    private let apiKey = "4XroeXveI0SqedpgYvAnksxD27bwpRJI"
     private let city = "Москва"
     
 
@@ -25,10 +25,16 @@ class WeatherModel {
                 return
             }
             guard let self = self, let cityKey = citySearchResult?.key else { return }
-            self.networkService.fetchWeatherForecast(cityKey: cityKey, apiKey: self.apiKey) { weatherForecast in
-                guard let forecast = weatherForecast else { return }
-                self.relay.accept("Получен прогноз погоды для \(self.city)")
-                // Используйте данные прогноза по своему усмотрению
+            self.networkService.fetchWeatherForecast(cityKey: cityKey, apiKey: self.apiKey) { [weak self] (weatherForecast, error) in
+                if let error = error {
+                    print("Ошибка при получении ключа города: \(error)")
+                    return
+                }
+                else{
+                    guard let forecast = weatherForecast else { return }
+                    self?.relay.accept("Получен прогноз погоды для ")
+                    // Используйте данные прогноза по своему усмотрению
+                }
             }
         }
 

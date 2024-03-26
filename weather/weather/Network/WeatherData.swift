@@ -18,11 +18,12 @@ struct HeadlineInfo: Codable {
     let Severity: Int
     let Text: String
     let Category: String
-    let EndDate: String
-    let EndEpochDate: Int
+    let EndDate: String?
+    let EndEpochDate: Int?
     let MobileLink: String
     let Link: String
 }
+
 
 struct DailyForecast: Codable {
     let Date: String

@@ -9,12 +9,18 @@ import Foundation
 import RxSwift
 import RxRelay
 
-class NetworkService {
+protocol NetworkServiceProtocol {
+    var relay: PublishRelay<WeatherForecast> { get }
+    func fetchCityKey(city: String, apiKey: String, completion: @escaping (CitySearchResultElement?, Error?) -> Void)
+    func fetchWeatherForecast(cityKey: String, apiKey: String, completion: @escaping (WeatherForecast?, Error?) -> Void)
+}
+
+final class NetworkService: NetworkServiceProtocol {
     
     var relay = PublishRelay<WeatherForecast>()
     
     func fetchCityKey(city: String, apiKey: String, completion: @escaping (CitySearchResultElement?, Error?) -> Void) {
-        let urlString = "https://dataservice.accuweather.com/locations/v1/cities/search?apikey=4XroeXveI0SqedpgYvAnksxD27bwpRJI&q=%D0%BC%D0%BE%D1%81%D0%BA%D0%B2%D0%B0&language=ru-RU&details=false"
+        let urlString = "https://dataservice.accuweather.com/locations/v1/cities/search?apikey=4XroeXveI0SqedpgYvAnksxD27bwpRJI&q=\(city)&language=ru-RU&details=false"
         guard let url = URL(string: urlString) else {
             print("Invalid URL")
             completion(nil, nil)
@@ -41,25 +47,31 @@ class NetworkService {
     }
 
 
-
-    
-    func fetchWeatherForecast(cityKey: String, apiKey: String, completion: @escaping (WeatherForecast?) -> Void) {
-        let urlString = "https://dataservice.accuweather.com/forecasts/v1/daily/5day/\(cityKey)?apikey=\(apiKey)&language=ru-RU&details=false&metric=true"
+    func fetchWeatherForecast(cityKey: String, apiKey: String, completion: @escaping (WeatherForecast?, Error?) -> Void) {
+        
+        let urlString = "https://dataservice.accuweather.com/forecasts/v1/daily/5day/\(cityKey)?apikey=\(apiKey)&language=ru-Ru&details=false&metric=true"
+        
         guard let url = URL(string: urlString) else {
             print("Invalid URL")
+            completion(nil, nil)
             return
         }
-
+        
         URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, error == nil else {
+            guard let data = data else {
                 print(error?.localizedDescription ?? "Unknown error")
-                completion(nil)
+                completion(nil, error)
                 return
             }
             
-            let weatherForecast = try? JSONDecoder().decode(WeatherForecast.self, from: data)
-            completion(weatherForecast)
+            do {
+                let weatherForecast = try JSONDecoder().decode(WeatherForecast.self, from: data)
+                print(weatherForecast)
+                completion(weatherForecast, nil)
+            } catch let decodeError {
+                print("Decoding fetchWeatherForecast error: \(decodeError)")
+                completion(nil, decodeError)
+            }
         }.resume()
     }
-    
 }
