@@ -21,8 +21,30 @@ class WeatherModel {
     private let networkService = NetworkService()
     private let disposeBag = DisposeBag()
     var relay = PublishRelay<[SimpleWeatherForecast]>()
-    private let apiKey = "4XroeXveI0SqedpgYvAnksxD27bwpRJI"
+    private let apiKey = "SXPHETs2IYVLCKnIs7MlKSYiRB9dzpTg"
     private var simpleForecast : [SimpleWeatherForecast] = []
+    
+    func requestByCoordinates(latitude: Double, longitude: Double){
+        networkService.requestByCoordinates(latitude: latitude, longitude: longitude, apiKey: apiKey) { [weak self] (citySearchResult, error) in
+            if let error = error {
+                print("Ошибка при получении ключа города: \(error)")
+                return
+            }
+            guard let self = self, let cityKey = citySearchResult?.key else { return }
+            self.networkService.fetchWeatherForecast(cityKey: cityKey, apiKey: self.apiKey) { [weak self] (weatherForecast, error) in
+                if let error = error {
+                    print("Ошибка при получении ключа города: \(error)")
+                    return
+                }
+                else{
+                    guard let forecast = weatherForecast else { return }
+                    self?.simpleForecast = (self?.processForecast(forecast))!
+                    self?.relay.accept(self?.simpleForecast ?? [])
+                
+                }
+            }
+        }
+    }
     
     func fetchWeather(text: String) {
         

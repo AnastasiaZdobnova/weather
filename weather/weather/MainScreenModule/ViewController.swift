@@ -9,10 +9,20 @@ import Foundation
 import SnapKit
 import RxSwift
 import RxCocoa
+import CoreLocation
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, CLLocationManagerDelegate {
     var viewModel = WeatherViewModel()
     let disposeBag = DisposeBag()
+    let locationManager = CLLocationManager()
+    
+    let locationButton: UIButton = {
+        let button = UIButton(type: .system)
+        if let image = UIImage(systemName: "location.square") {
+            button.setImage(image, for: .normal)
+        }
+        return button
+    }()
     
     let textField: UITextField = {
         let textField = UITextField()
@@ -25,16 +35,24 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view.backgroundColor = .white
         setupUI()
         subscribes()
+        
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization() // Запрашиваем разрешение пользователя
+        //locationManager.startUpdatingLocation() // Начинаем отслеживание местоположения
+        
     }
     
     private func setupUI(){
+        view.addSubview(locationButton)
         view.addSubview(textField)
+        view.addSubview(tableView)
         
         textField.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(100)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
             make.centerX.equalToSuperview()
             make.width.equalTo(200)
         }
@@ -46,7 +64,12 @@ class ViewController: UIViewController {
             make.bottom.equalToSuperview()
         }
         tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: "WeatherTableViewCell")
-
+        
+        view.addSubview(locationButton)
+        locationButton.snp.makeConstraints { make in
+            make.left.equalToSuperview().offset(20)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
+        }
     }
     
     private func subscribes() {
@@ -65,9 +88,26 @@ class ViewController: UIViewController {
                 cell.configure(with: element)
             }
             .disposed(by: disposeBag)
-
+        
+        locationButton.rx.tap
+            .bind { [weak self] in
+                
+                self?.locationManager.requestLocation() // Requests a single location update
+            }
+            .disposed(by: disposeBag)
     }
     
-   
+    @objc func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            print(location.coordinate) // Выводим координаты местоположения в консоль
+            self.viewModel.requestByCoordinates(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+        }
+    }
+    
+    @objc func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Ошибка получения местоположения: \(error)")
+        
+    }
+    
 }
 

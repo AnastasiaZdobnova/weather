@@ -28,7 +28,7 @@ class WeatherTableViewCell: UITableViewCell {
         addSubview(temperatureLabel)
         addSubview(dayPhraseLabel)
         addSubview(nightPhraseLabel)
-        
+        nightPhraseLabel.numberOfLines = 0
         dateLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(12)
             make.left.equalToSuperview().offset(12)

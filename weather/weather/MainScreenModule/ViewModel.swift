@@ -23,4 +23,12 @@ class WeatherViewModel {
         model.fetchWeather(text: text)
     }
     
+    func requestByCoordinates(latitude: Double, longitude: Double){
+        model.relay.subscribe { event in
+            self.relay.accept(event.element!)
+        }.disposed(by: disposeBag)
+        
+        model.requestByCoordinates(latitude: latitude, longitude: longitude)
+    }
+    
 }
