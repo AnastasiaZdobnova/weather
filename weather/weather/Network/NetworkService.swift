@@ -37,7 +37,6 @@ final class NetworkService: NetworkServiceProtocol {
             do {
                 let citySearchResult = try JSONDecoder().decode(CitySearchResult.self, from: data)
                 let cityInfo = citySearchResult.first
-                print(cityInfo?.key)
                 completion(cityInfo, nil)
             } catch let decodeError {
                 print("Decoding error: \(decodeError)")
@@ -66,7 +65,6 @@ final class NetworkService: NetworkServiceProtocol {
             
             do {
                 let weatherForecast = try JSONDecoder().decode(WeatherForecast.self, from: data)
-                print(weatherForecast)
                 completion(weatherForecast, nil)
             } catch let decodeError {
                 print("Decoding fetchWeatherForecast error: \(decodeError)")

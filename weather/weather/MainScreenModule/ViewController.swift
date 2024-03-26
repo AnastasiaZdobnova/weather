@@ -14,52 +14,60 @@ class ViewController: UIViewController {
     var viewModel = WeatherViewModel()
     let disposeBag = DisposeBag()
     
-    let button: UIButton = {
-        let button = UIButton()
-        button.setTitle("Нажми меня", for: .normal)
-        return button
+    let textField: UITextField = {
+        let textField = UITextField()
+        textField.borderStyle = .roundedRect
+        textField.placeholder = "Введите город"
+        return textField
     }()
     
-    let label: UILabel = {
-        let label = UILabel()
-        return label
-    }()
+    let tableView = UITableView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .blue
+        view.backgroundColor = .white
         setupUI()
         subscribes()
     }
     
     private func setupUI(){
-        view.addSubview(button)
-        view.addSubview(label)
+        view.addSubview(textField)
         
-        button.snp.makeConstraints { make in
-            make.centerX.centerY.equalToSuperview()
-        }
-        
-        label.snp.makeConstraints { make in
-            make.top.equalTo(button.snp.bottom).offset(20)
+        textField.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(100)
             make.centerX.equalToSuperview()
+            make.width.equalTo(200)
         }
+        
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(textField.snp.bottom).offset(20)
+            make.left.right.equalToSuperview().inset(20)
+            make.bottom.equalToSuperview()
+        }
+        tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: "WeatherTableViewCell")
+
     }
     
     private func subscribes() {
-        button.rx.tap.subscribe { _ in
-            self.viewModel.buttonPressed()
-        }.disposed(by: disposeBag)
         
-        
-        viewModel.relay
-            .observe(on: MainScheduler.instance) // Убедитесь, что обновление UI происходит в главном потоке
-            .subscribe { event in
-                self.label.text = event.element
-                print(event.element)
-            }
+        textField.rx.controlEvent(.editingDidEndOnExit)
+            .asObservable()
+            .subscribe(onNext: { [weak self] in
+                if let text = self?.textField.text {
+                    self?.viewModel.buttonPressed(text: text)
+                }
+            })
             .disposed(by: disposeBag)
         
+        viewModel.relay
+            .bind(to: tableView.rx.items(cellIdentifier: "WeatherTableViewCell", cellType: WeatherTableViewCell.self)) { (row, element, cell) in
+                cell.configure(with: element)
+            }
+            .disposed(by: disposeBag)
+
     }
+    
+   
 }
 

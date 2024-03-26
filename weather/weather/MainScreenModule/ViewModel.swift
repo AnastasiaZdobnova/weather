@@ -13,17 +13,14 @@ class WeatherViewModel {
     
     private let model = WeatherModel()
     let disposeBag = DisposeBag()
-    var relay = PublishRelay<String>()
-    var textr = ""
+    var relay = PublishRelay<[SimpleWeatherForecast]>()
     
-    func buttonPressed() {
-        testRX()
-    }
-    
-    func testRX() {
+    func buttonPressed(text: String) {
         model.relay.subscribe { event in
             self.relay.accept(event.element!)
         }.disposed(by: disposeBag)
-        model.fetchWeather()
+        
+        model.fetchWeather(text: text)
     }
+    
 }

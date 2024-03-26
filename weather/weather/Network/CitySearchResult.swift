@@ -1,6 +1,5 @@
 //
-//  CityData.swift
-//  weather
+//  CitySearchResult.swift
 //
 //  Created by Анастасия Здобнова on 25.03.2024.
 //

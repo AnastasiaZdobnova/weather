@@ -9,17 +9,24 @@ import Foundation
 import RxSwift
 import RxRelay
 
+struct SimpleWeatherForecast {
+    let date: String
+    let minimumTemperature: Double
+    let maximumTemperature: Double
+    let dayIconPhrase: String
+    let nightIconPhrase: String
+}
 
 class WeatherModel {
     private let networkService = NetworkService()
     private let disposeBag = DisposeBag()
-    var relay = PublishRelay<String>()
+    var relay = PublishRelay<[SimpleWeatherForecast]>()
     private let apiKey = "4XroeXveI0SqedpgYvAnksxD27bwpRJI"
-    private let city = "Москва"
+    private var simpleForecast : [SimpleWeatherForecast] = []
     
-
-    func fetchWeather() {
-        networkService.fetchCityKey(city: city, apiKey: apiKey) { [weak self] (citySearchResult, error) in
+    func fetchWeather(text: String) {
+        
+        networkService.fetchCityKey(city: text, apiKey: apiKey) { [weak self] (citySearchResult, error) in
             if let error = error {
                 print("Ошибка при получении ключа города: \(error)")
                 return
@@ -32,11 +39,29 @@ class WeatherModel {
                 }
                 else{
                     guard let forecast = weatherForecast else { return }
-                    self?.relay.accept("Получен прогноз погоды для ")
-                    // Используйте данные прогноза по своему усмотрению
+                    self?.simpleForecast = (self?.processForecast(forecast))!
+                    self?.relay.accept(self?.simpleForecast ?? [])
+                
                 }
             }
         }
-
+    }
+    
+    func processForecast(_ forecast: WeatherForecast) -> [SimpleWeatherForecast] {
+        return forecast.DailyForecasts.map { dailyForecast in
+            let date = dailyForecast.Date
+            let minTemp = dailyForecast.Temperature.Minimum.Value
+            let maxTemp = dailyForecast.Temperature.Maximum.Value
+            let dayPhrase = dailyForecast.Day.IconPhrase
+            let nightPhrase = dailyForecast.Night.IconPhrase
+            
+            return SimpleWeatherForecast(
+                date: date,
+                minimumTemperature: minTemp,
+                maximumTemperature: maxTemp,
+                dayIconPhrase: dayPhrase,
+                nightIconPhrase: nightPhrase
+            )
+        }
     }
 }

@@ -1,5 +1,5 @@
 //
-//  WeatherData.swift
+//  WeatherForecast.swift
 //  weather
 //
 //  Created by Анастасия Здобнова on 25.03.2024.
