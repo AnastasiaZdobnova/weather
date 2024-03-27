@@ -14,24 +14,31 @@ class WeatherTableViewCell: UITableViewCell {
         let label = UILabel()
         label.numberOfLines = 0
         label.textColor = ColorConstants.textColor
+        label.font = FontConstants.labelFont
         return label
     }()
+    
     private let temperatureLabel : UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         label.textColor = ColorConstants.textColor
+        label.font = FontConstants.labelFont
         return label
     }()
+    
     private let dayPhraseLabel : UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         label.textColor = ColorConstants.textColor
+        label.font = FontConstants.labelFont
         return label
     }()
+    
     private let nightPhraseLabel : UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         label.textColor = ColorConstants.textColor
+        label.font = FontConstants.labelFont
         return label
     }()
     

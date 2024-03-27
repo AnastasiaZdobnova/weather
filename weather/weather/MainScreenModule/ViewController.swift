@@ -25,6 +25,7 @@ class ViewController: UIViewController, ViewControllerProtocol, CLLocationManage
         let label = UILabel()
         label.text = "Город"
         label.textColor = ColorConstants.textColor
+        label.font = FontConstants.titleFont
         return label
     }()
     
@@ -38,6 +39,7 @@ class ViewController: UIViewController, ViewControllerProtocol, CLLocationManage
         let textField = UITextField()
         textField.borderStyle = .roundedRect
         textField.placeholder = "Введите город"
+        textField.font = FontConstants.labelFont
         return textField
     }()
     

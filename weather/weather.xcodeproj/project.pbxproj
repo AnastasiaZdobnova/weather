@@ -21,6 +21,7 @@
 		54E3E8212BB307870088922A /* SimpleWeatherForecast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E3E8202BB307870088922A /* SimpleWeatherForecast.swift */; };
 		54E3E8262BB32E170088922A /* LayoutConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E3E8252BB32E170088922A /* LayoutConstants.swift */; };
 		54E3E8282BB330000088922A /* ColorConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E3E8272BB330000088922A /* ColorConstants.swift */; };
+		54E3E8322BB425660088922A /* FontConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E3E8312BB425660088922A /* FontConstants.swift */; };
 		9AF5B52AA8F86897FFD6C08B /* Pods_weather.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A12B0A81F5078999383253C /* Pods_weather.framework */; };
 /* End PBXBuildFile section */
 
@@ -43,6 +44,7 @@
 		54E3E8202BB307870088922A /* SimpleWeatherForecast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleWeatherForecast.swift; sourceTree = "<group>"; };
 		54E3E8252BB32E170088922A /* LayoutConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutConstants.swift; sourceTree = "<group>"; };
 		54E3E8272BB330000088922A /* ColorConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorConstants.swift; sourceTree = "<group>"; };
+		54E3E8312BB425660088922A /* FontConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontConstants.swift; sourceTree = "<group>"; };
 		D56C3AE95C302C459004A6B0 /* Pods-weather.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-weather.release.xcconfig"; path = "Target Support Files/Pods-weather/Pods-weather.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -151,6 +153,7 @@
 			children = (
 				54E3E8252BB32E170088922A /* LayoutConstants.swift */,
 				54E3E8272BB330000088922A /* ColorConstants.swift */,
+				54E3E8312BB425660088922A /* FontConstants.swift */,
 			);
 			path = CommonUI;
 			sourceTree = "<group>";
@@ -282,6 +285,7 @@
 				54E3E81B2BB186630088922A /* WeatherForecast.swift in Sources */,
 				54E3E8282BB330000088922A /* ColorConstants.swift in Sources */,
 				54E3E8212BB307870088922A /* SimpleWeatherForecast.swift in Sources */,
+				54E3E8322BB425660088922A /* FontConstants.swift in Sources */,
 				54E3E8262BB32E170088922A /* LayoutConstants.swift in Sources */,
 				540DE41A2BB0733B00E19D2A /* AppDelegate.swift in Sources */,
 				54E3E81D2BB1F7F30088922A /* CitySearchResult.swift in Sources */,
